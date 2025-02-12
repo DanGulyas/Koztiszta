@@ -203,7 +203,7 @@ pie_chart = go.Pie(
 external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css']
 
 # Initialize Dash app
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__,suppress_callback_exceptions=True, external_stylesheets=external_stylesheets)
 app.title = "Köztiszta rendelések, szerződések, szerződéstételek DQ"
 
 # Dashboard layout
@@ -392,4 +392,5 @@ app.layout = html.Div([  # Start of the layout
 
 # Run the app
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8050)
+    app.run_server(debug=True, host="0.0.0.0", port=8080)
+
