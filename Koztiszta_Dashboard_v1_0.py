@@ -203,7 +203,7 @@ pie_chart = go.Pie(
 external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css']
 
 # Initialize Dash app
-app = dash.Dash(__name__,suppress_callback_exceptions=True, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=external_stylesheets)
 app.title = "Köztiszta rendelések, szerződések, szerződéstételek DQ"
 
 # Dashboard layout
