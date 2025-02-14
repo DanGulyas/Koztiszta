@@ -68,7 +68,7 @@ celletesitmenyszerz_data = {
 SAP_SF_szamltetel = [0]               # Nincs találat = 1022   SAP-SF között szerződéstételek státusza egyezik e
 
 SAP_SF_szerztetelstatusz = {
-"szöveg": ["Igen", "Nem"],
+"SAP-SF között szerződéstételek száma egyezik e": ["Igen", "Nem"],
 "Count":[1405,	53]}
 
 
@@ -90,8 +90,11 @@ df_szerztetel_szolgcikk = pd.DataFrame(szerztetel_szolgcikk)
 df_kpi2 = pd.DataFrame(list(kpi_lista_szerzodesek.items()), columns=['KPI', 'Hibák száma'])
 df_celletesitmenyszerz = pd.DataFrame(celletesitmenyszerz_data)
 df_SAP_SF_szamltetel = pd.DataFrame(SAP_SF_szamltetel)
-df_SAP_SF_szerztetelstatusz = pd.DataFrame(SAP_SF_szerztetelstatusz)
+df_SAP_SF_szerztetelstatusz = pd.DataFrame(SAP_SF_szerztetelstatusz).rename(columns=str.strip)
 df_SAP_SF_szerztetelszolgcikk = pd.DataFrame(SAP_SF_szerztetelszolgcikk)
+
+
+
 
 # Lying stacked bar chart with total values displayed
 lying_bar_fig = go.Figure()
@@ -196,6 +199,13 @@ fig_sap_azonosito.update_layout(
 # Generate Lying Stacked Bar Chart for "Mennyiség / Szerződéstételen rajta van az értékesített szolg. cikk?"
 fig_szolgcikk = go.Figure()
 
+fig_SF_SAP_szerztetelstatusz = px.treemap(
+    df_SAP_SF_szerztetelstatusz,
+    path=["SAP-SF között szerződéstételek száma egyezik e"],  # Ensure this matches the cleaned name
+    values="Count",
+    title="SAP-SF között szerződéstételek száma egyezik e"
+)
+
 
 empty_measure_szolgcikk = df_szerztetel_szolgcikk['Count'][1]
 empty_measure_szolgcikk_display = f"{empty_measure_szolgcikk} ✅" if empty_measure_szolgcikk == 0 else str(empty_measure_szolgcikk)
@@ -232,7 +242,6 @@ celletesitmenyszerz_data_fig = px.treemap(df_ure,
                           title='Hiányos céllétesítmény nevek száma',
                           template='plotly_dark')
 
-
 # External dark theme stylesheet
 external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css']
 
@@ -240,6 +249,7 @@ external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/dark
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=external_stylesheets)
 app.title = "Köztiszta rendelések, szerződések, szerződéstételek DQ"
 
+# Dashboard layout
 app.layout = html.Div([  # Start of the layout
     html.H1("Köztiszta rendelések, szerződések, szerződéstételek DQ", style={
         "textAlign": "center",
@@ -307,6 +317,10 @@ app.layout = html.Div([  # Start of the layout
 
                 html.Div([
                     dcc.Graph(figure=fig_sap_azonosito.update_layout(
+                        plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                        font=dict(color="white"), legend=dict(x=1, y=1)
+                    )),
+                    dcc.Graph(figure=fig_SF_SAP_szerztetelstatusz.update_layout(
                         plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
                         font=dict(color="white"), legend=dict(x=1, y=1)
                     )),
