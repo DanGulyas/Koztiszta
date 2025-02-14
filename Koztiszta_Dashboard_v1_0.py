@@ -42,29 +42,40 @@ tiz_nap_vazlat = {
 
 tiz_nap_modositas = {
     "10 napnál régebbi, Módosítás szükséges státuszú szerződés?": ["Igen", "Nem", "Nincs aktiválási dátum"],
-    "Count": [294, 1832, 86]  # Numeric column for values
+    "Count": [294, 1832, 86]
 }
 
 szerztetel_SAP_azonosito = {
-    "Szerződéstételen van SAP azonosító?": {
-        "Igen": [1458],
-        "Nem": [754]
+    "Szerződéstételen van SAP azonosító?": ["Igen", "Nem"],
+        "Count": [1458, 754]
     }
-}
 
 szerztetel_szolgcikk = {
-    "Szerződéstételen rajta van az értékesített szolg. cikk?": {
-        "Igen": [2212],
-        "Nem": [0]
+    "Szerződéstételen rajta van az értékesített szolg. cikk?": ["Igen", "Nem"],
+        "Count": [2212, 0],
     }
-                    }
 
 kpi_lista_szerzodesek = {'10 napnál régebbi, vázlat stűátuszú szerződés': 2126,
              '10 napnál régebbi, Módosítás szükséges státuszú szerződés': 294,
              'Szerződéstételen nincs SAP azonosító': 754,
-             '"Szerződéstételen nincs értékesített szolg. cikk': 0}
+             'Szerződéstételen nincs értékesített szolg. cikk': 0}
 
-# Convert rendeles dictionaries to DataFrames
+celletesitmenyszerz_data = {
+    "Céllétesítménye3k száma": ["Nem Üres", "Üres"],
+    "Count": [42581, 6455]
+}
+
+SAP_SF_szamltetel = [0]               # Nincs találat = 1022   SAP-SF között szerződéstételek státusza egyezik e
+
+SAP_SF_szerztetelstatusz = {
+"szöveg": ["Igen", "Nem"],
+"Count":[1405,	53]}
+
+
+SAP_SF_szerztetelszolgcikk  = [0]               # Nincs találat = 1022
+
+
+#                                       Convert rendeles dictionaries to DataFrames
 df_rekord = pd.DataFrame(rekord_data)
 df_ure = pd.DataFrame(ure_data)
 df_status = pd.DataFrame(status_data)
@@ -77,12 +88,13 @@ df_tiz_nap_modositas = pd.DataFrame(tiz_nap_modositas)
 df_szerztetel_SAP_azonosito = pd.DataFrame(szerztetel_SAP_azonosito)
 df_szerztetel_szolgcikk = pd.DataFrame(szerztetel_szolgcikk)
 df_kpi2 = pd.DataFrame(list(kpi_lista_szerzodesek.items()), columns=['KPI', 'Hibák száma'])
-
-
+df_celletesitmenyszerz = pd.DataFrame(celletesitmenyszerz_data)
+df_SAP_SF_szamltetel = pd.DataFrame(SAP_SF_szamltetel)
+df_SAP_SF_szerztetelstatusz = pd.DataFrame(SAP_SF_szerztetelstatusz)
+df_SAP_SF_szerztetelszolgcikk = pd.DataFrame(SAP_SF_szerztetelszolgcikk)
 
 # Lying stacked bar chart with total values displayed
 lying_bar_fig = go.Figure()
-
 # Adding bars to the lying bar chart with stacking enabled
 for index, row in df_rekord.iterrows():
     lying_bar_fig.add_trace(go.Bar(
@@ -168,20 +180,35 @@ fig_modositas = px.treemap(df_tiz_nap_modositas,
 
 # Generate Stacked Bar Chart for "Szerződéstételen van SAP azonosító?"
 fig_sap_azonosito = go.Figure()
-fig_sap_azonosito.add_trace(go.Bar(x=df_szerztetel_SAP_azonosito.columns,
-                                  y=df_szerztetel_SAP_azonosito.iloc[0],
-                                  name="SAP Azonosító"))
-fig_sap_azonosito.update_layout(barmode='stack',
-                                title="Szerződéstételen Van SAP Azonosító")
+fig_sap_azonosito.add_trace(go.Bar(
+    x=df_szerztetel_SAP_azonosito['Count'],  # x represents the count values
+    y=df_szerztetel_SAP_azonosito['Szerződéstételen van SAP azonosító?'],  # y represents the categories
+    orientation='h',  # Horizontal bars
+    name="SAP Azonosító",
+    text=df_szerztetel_SAP_azonosito['Count'],  # Display the count as text
+    textposition='inside'  # Place the text inside the bars
+))
+fig_sap_azonosito.update_layout(
+    title="Szerződéstételen van e SAP azonosító",  # Title for the chart
+    barmode='stack'  # Stack the bars if needed (for multiple categories)
+)
 
 # Generate Lying Stacked Bar Chart for "Mennyiség / Szerződéstételen rajta van az értékesített szolg. cikk?"
 fig_szolgcikk = go.Figure()
-fig_szolgcikk.add_trace(go.Bar(x=df_szerztetel_szolgcikk.columns,
-                              y=df_szerztetel_szolgcikk.iloc[0],
-                              name="Szolgáltatott Cikk"))
-fig_szolgcikk.update_layout(barmode='stack',
-                            title="Szerződéstételen Rajta Van Az Értékesített Szolgáltatott Cikk",
-                            xaxis={'categoryorder': 'total ascending'})
+
+
+empty_measure_szolgcikk = df_szerztetel_szolgcikk['Count'][1]
+empty_measure_szolgcikk_display = f"{empty_measure_szolgcikk} ✅" if empty_measure_szolgcikk == 0 else str(empty_measure_szolgcikk)
+
+empty_measure_SAP_SF_szamltetel = df_SAP_SF_szamltetel.iloc[0, 0]
+empty_measure_SAP_SF_szamltetel_display = f"{empty_measure_SAP_SF_szamltetel} ✅" if empty_measure_SAP_SF_szamltetel == 0 else str(empty_measure_SAP_SF_szamltetel)
+
+empty_measure_SAP_SF_szerztetelszolgcikk = df_SAP_SF_szerztetelszolgcikk.iloc[0, 0]
+empty_measure_SAP_SF_szerztetelszolgcikk_display = f"{empty_measure_SAP_SF_szerztetelszolgcikk} ✅" if empty_measure_SAP_SF_szerztetelszolgcikk == 0 else str(empty_measure_SAP_SF_szerztetelszolgcikk)
+
+
+
+
 
 # Create the bar chart
 bar_chart = go.Bar(
@@ -199,6 +226,13 @@ pie_chart = go.Pie(
 )
 
 
+celletesitmenyszerz_data_fig = px.treemap(df_ure,
+                          path=['Céllétesítmények száma'],
+                          values='Total',  # Values to represent the size of each block
+                          title='Hiányos céllétesítmény nevek száma',
+                          template='plotly_dark')
+
+
 # External dark theme stylesheet
 external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css']
 
@@ -206,7 +240,6 @@ external_stylesheets = ['https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/dark
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=external_stylesheets)
 app.title = "Köztiszta rendelések, szerződések, szerződéstételek DQ"
 
-# Dashboard layout
 app.layout = html.Div([  # Start of the layout
     html.H1("Köztiszta rendelések, szerződések, szerződéstételek DQ", style={
         "textAlign": "center",
@@ -215,19 +248,18 @@ app.layout = html.Div([  # Start of the layout
         "padding": "10px",
         "borderRadius": "10px",
     }),
-    dcc.Tabs([  # Start of the Tabs component
+
+    dcc.Tabs([
         dcc.Tab(
             label="Szerződések, szerződéstételek",
-            children=[  # Children inside the tab
-                html.Div([  # Add the two charts here in the top half
-                    html.Div([  # KPI section (Bar chart and Pie chart)
+            children=[
+                html.Div([
+                    html.Div([
                         html.H2("Fő KPI-ok összevetése", style={
-                            "textAlign": "center",  # Center the title
-                        "color": "white",
-                        "padding": "20px",
-                        "fontSize": "20px"
-                    }),
-                        html.Div([  # Wrap both graphs in a div
+                            "textAlign": "center", "color": "white",
+                            "padding": "20px", "fontSize": "20px"
+                        }),
+                        html.Div([
                             dcc.Graph(
                                 id="kpi-bar-chart2",
                                 figure=px.bar(
@@ -235,11 +267,9 @@ app.layout = html.Div([  # Start of the layout
                                     template="plotly_dark"
                                 ).update_layout(
                                     plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
-                                    font=dict(color="white"),
-                                    legend=dict(x=1, y=1)  # Position the legend on the right
+                                    font=dict(color="white"), legend=dict(x=1, y=1)
                                 ).update_traces(
-                                    texttemplate='%{y}',  # Show actual values (N)
-                                    textposition='inside',  # Position the numbers inside the bars
+                                    texttemplate='%{y}', textposition='inside',
                                     insidetextfont=dict(color='white', size=12)
                                 )
                             ),
@@ -247,15 +277,12 @@ app.layout = html.Div([  # Start of the layout
                                 id="kpi-pie-chart2",
                                 figure=px.pie(
                                     df_kpi2, values='Hibák száma', names='KPI',
-                                    hole=0.4,
-                                    template="plotly_dark"
+                                    hole=0.4, template="plotly_dark"
                                 ).update_traces(
-                                    textinfo='label+value',  # Show label and actual number (N)
-                                    insidetextfont=dict(color='white', size=12)
+                                    textinfo='label+value', insidetextfont=dict(color='white', size=12)
                                 ).update_layout(
                                     plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
-                                    font=dict(color="white"),
-                                    legend=dict(x=1, y=1)  # Position the legend on the right
+                                    font=dict(color="white"), legend=dict(x=1, y=1)
                                 )
                             )
                         ], style={
@@ -263,132 +290,120 @@ app.layout = html.Div([  # Start of the layout
                             "flexDirection": "row", "padding": "10px"
                         })
                     ], style={
-                        "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"
+                        "display": "flex", "flexDirection": "column", "alignItems": "center"
                     }),
                 ]),
-                html.Div([  # First row of graphs
-                    dcc.Graph(
-                        figure=fig_vazlat.update_layout(
-                            plot_bgcolor="#1e1e1e",  # Dark background for the plot area
-                            paper_bgcolor="#1e1e1e",  # Dark background for the paper area
-                            font=dict(color="white"),  # White text color for the plot
-                            legend=dict(x=1, y=1),
-                        )
-                    ),
-                    dcc.Graph(
-                        figure=fig_modositas.update_layout(
-                            plot_bgcolor="#1e1e1e",
-                            paper_bgcolor="#1e1e1e",
-                            font=dict(color="white"),
-                            legend=dict(x=1, y=1),
-                        )
-                    ),
+
+                html.Div([
+                    dcc.Graph(figure=fig_vazlat.update_layout(
+                        plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                        font=dict(color="white"), legend=dict(x=1, y=1)
+                    )),
+                    dcc.Graph(figure=fig_modositas.update_layout(
+                        plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                        font=dict(color="white"), legend=dict(x=1, y=1)
+                    )),
                 ], style={'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'space-around'}),
 
-                html.Div([  # Second row of graphs
-                    dcc.Graph(
-                        figure=fig_sap_azonosito.update_layout(
-                            plot_bgcolor="#1e1e1e",
-                            paper_bgcolor="#1e1e1e",
-                            font=dict(color="white"),
-                            legend=dict(x=1, y=1),
-                        )
-                    ),
-                    dcc.Graph(
-                        figure=fig_szolgcikk.update_layout(
-                            plot_bgcolor="#1e1e1e",
-                            paper_bgcolor="#1e1e1e",
-                            font=dict(color="white"),
-                            legend=dict(x=1, y=1),
-                        )
-                    ),
-                ], style={'display': 'flex', 'flexWrap': 'wrap', 'justifyContent': 'space-around'}),
+                html.Div([
+                    dcc.Graph(figure=fig_sap_azonosito.update_layout(
+                        plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                        font=dict(color="white"), legend=dict(x=1, y=1)
+                    )),
+                    html.H3("Szerződéstételen rajta van-e a szolgáltatási cikk",
+                            style={"textAlign": "center", "color": "#ffcc00"}),
+                    html.H1(empty_measure_szolgcikk_display,
+                            style={"textAlign": "center", "color": "#00ff00", "fontWeight": "bold",
+                                   "fontSize": "50px"}),
+
+                    html.H3("SAP-SF között számlázási tétel egyezik-e",
+                            style={"textAlign": "center", "color": "#ffcc00"}),
+                    html.H1(empty_measure_SAP_SF_szamltetel_display,
+                            style={"textAlign": "center", "color": "#00ff00", "fontWeight": "bold",
+                                   "fontSize": "50px"}),
+
+                    html.H3("SF-SAP között szerződéstételeken lévő szolg. cikkek egyeznek-e",
+                            style={"textAlign": "center", "color": "#ffcc00"}),
+                    html.H1(empty_measure_SAP_SF_szerztetelszolgcikk_display,
+                            style={"textAlign": "center", "color": "#00ff00", "fontWeight": "bold",
+                                   "fontSize": "50px"}),
+
+                ], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center',
+                          "color": "white", "backgroundColor": "#1e1e1e"}),
+
             ],
-            style={
-                "color": "white",  # Default color for inactive tab
-                "backgroundColor": "#1e1e1e",  # Dark background for inactive tabs
-            },
+            style={"backgroundColor": "#1e1e1e", "color": "white"},
+            selected_style={"backgroundColor": "white", "color": "black", "fontWeight": "bold"}
         ),
 
-        dcc.Tab(label="Rendelések", children=[
-            html.Div([  # Add the two charts here in the top half
-                html.Div([  # KPI section (Bar chart and Pie chart)
-                    html.H2("Fő KPI-ok összevetése", style={
-                        "textAlign": "center",  # Center the title
-                        "color": "white",
-                        "padding": "20px",
-                        "fontSize": "20px"
-                    }),
-                    html.Div([  # Wrap both graphs in a div
-                        dcc.Graph(
-                            id="kpi-bar-chart",
-                            figure=px.bar(
-                                df_kpi, x='KPI', y='Hibák száma',
-                                template="plotly_dark"
-                            ).update_layout(
-                                plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
-                                font=dict(color="white"),
-                                legend=dict(x=1, y=1)  # Position the legend on the right
-                            ).update_traces(
-                                texttemplate='%{y}',  # Show actual values (N)
-                                textposition='inside',  # Position the numbers inside the bars
-                                insidetextfont=dict(color='white', size=12)
+        dcc.Tab(
+            label="Rendelések",
+            children=[
+                html.Div([
+                    html.Div([
+                        html.H2("Fő KPI-ok összevetése", style={
+                            "textAlign": "center", "color": "white",
+                            "padding": "20px", "fontSize": "20px"
+                        }),
+                        html.Div([
+                            dcc.Graph(
+                                id="kpi-bar-chart",
+                                figure=px.bar(
+                                    df_kpi, x='KPI', y='Hibák száma',
+                                    template="plotly_dark"
+                                ).update_layout(
+                                    plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                                    font=dict(color="white"), legend=dict(x=1, y=1)
+                                ).update_traces(
+                                    texttemplate='%{y}', textposition='inside',
+                                    insidetextfont=dict(color='white', size=12)
+                                )
+                            ),
+                            dcc.Graph(
+                                id="kpi-pie-chart",
+                                figure=px.pie(
+                                    df_kpi, values='Hibák száma', names='KPI',
+                                    hole=0.4, template="plotly_dark"
+                                ).update_traces(
+                                    textinfo='label+value', insidetextfont=dict(color='white', size=12)
+                                ).update_layout(
+                                    plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
+                                    font=dict(color="white"), legend=dict(x=1, y=1)
+                                )
                             )
-                        ),
-                        dcc.Graph(
-                            id="kpi-pie-chart",
-                            figure=px.pie(
-                                df_kpi, values='Hibák száma', names='KPI',
-                                hole=0.4,
-                                template="plotly_dark"
-                            ).update_traces(
-                                textinfo='label+value',  # Show label and actual number (N)
-                                insidetextfont=dict(color='white', size=12)
-                            ).update_layout(
-                                plot_bgcolor="#1e1e1e", paper_bgcolor="#1e1e1e",
-                                font=dict(color="white"),
-                                legend=dict(x=1, y=1)  # Position the legend on the right
-                            )
-                        )
-                    ], style={
-                        "display": "flex", "justifyContent": "space-between",
-                        "flexDirection": "row", "padding": "10px"
-                    })
-                ], style={
-                    "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"
-                }),
+                        ], style={
+                            "display": "flex", "justifyContent": "space-between",
+                            "flexDirection": "row", "padding": "10px"
+                        })
+                    ], style={"display": "flex", "flexDirection": "column", "alignItems": "center"}),
 
-                # Rest of the charts below the KPI charts
-                dcc.Graph(id="lying-bar-chart", figure=lying_bar_fig),
-                dcc.Graph(id="ure-bar-chart", figure=ure_data_fig),
-                dcc.Graph(id="status-bar-chart", figure=status_data_fig),
+                    dcc.Graph(id="lying-bar-chart", figure=lying_bar_fig),
+                    dcc.Graph(id="ure-bar-chart", figure=ure_data_fig),
+                    dcc.Graph(id="status-bar-chart", figure=status_data_fig),
 
-                html.Div([  # KPI section for rendeles_kpi
-                    html.H3("Teljesült rendelések, ahol több, mint 1 db mérés van",
-                            style={"textAlign": "center", "color": "#ffcc00"}),
-                    html.H1(rendeles_kpi,
-                            style={"textAlign": "center", "color": "#ff5733", "fontWeight": "bold", "fontSize": "50px"})
-                ], style={
-                    "display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center",
-                    "backgroundColor": "#1e1e1e", "padding": "20px", "borderRadius": "10px"
-                }),
-            ]),
-            html.Div([  # Empty measurement section
-                html.H3("Rendelések száma, ahol a szállítás napja már 10 napja letelt, de nincs rá mérés",
-                        style={"textAlign": "center", "color": "#ffcc00"}),
-                html.H1(empty_measure_display,
-                        style={"textAlign": "center", "color": "#00ff00", "fontWeight": "bold",
-                               "fontSize": "50px"}),
-            ])
-        ], style={
-            "backgroundColor": "#1e1e1e",  # Parent background color
-            "color": "white"
-        })
-    ], style={
-        "backgroundColor": "#1e1e1e",  # Overall background color
-        "color": "white"
-    })
-])
+                    html.Div([
+                        html.H3("Teljesült rendelések, ahol több, mint 1 db mérés van",
+                                style={"textAlign": "center", "color": "#ffcc00"}),
+                        html.H1(rendeles_kpi,
+                                style={"textAlign": "center", "color": "#ff5733", "fontWeight": "bold",
+                                       "fontSize": "50px"})
+                    ], style={"display": "flex", "flexDirection": "column", "alignItems": "center",
+                              "backgroundColor": "#1e1e1e", "padding": "20px", "borderRadius": "10px"}),
+
+                    html.Div([
+                        html.H3("Rendelések száma, ahol a szállítás napja már 10 napja letelt, de nincs rá mérés",
+                                style={"textAlign": "center", "color": "#ffcc00"}),
+                        html.H1(empty_measure_display,
+                                style={"textAlign": "center", "color": "#00ff00", "fontWeight": "bold",
+                                       "fontSize": "50px"}),
+                    ])
+                ])
+            ],
+            style={"backgroundColor": "#1e1e1e", "color": "white"},
+            selected_style={"backgroundColor": "white", "color": "black", "fontWeight": "bold"}
+        )
+        ])
+        ])
 
 server = app.server
 
