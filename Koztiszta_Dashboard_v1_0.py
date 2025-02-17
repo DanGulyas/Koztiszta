@@ -57,7 +57,7 @@ szerztetel_szolgcikk = {
         "Count": [2212, 0],
     }
 
-kpi_lista_szerzodesek = {'10 napnál régebbi, vázlat státuszú szerződések': 2126,
+kpi_lista_szerzodesek = {'10 napnál régebbi, vázlat státuszú szerződések': 0,
              '10 napnál régebbi, Módosítás szükséges státuszú szerződések': 294,
              'Szerződéstételen nincs SAP azonosító': 754,
              'Szerződéstételen nincs kapcsolódó szolg. cikk': 0,
