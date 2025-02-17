@@ -32,7 +32,7 @@ rendeleshez_egy_meres_data_dict = {'Egy rendeléshez több mérés van': ['Igen'
 kpi_lista = {'Más cikkszámokon mérlegjegy': 1,
              'Üres Céllétesítmény rekordok': 6385,
              'Teljesült mérések mérési adat nélkül': 6,
-             'Rendeléshez több, mint 1 mérés van': 2178,
+             'Rendeléshez több, mint 1 mérés van': 2179,
              '10 napja letelt rendeléseken nincs mérés': 0}
 
 #                                                               SZERZODESEK SZERZLDESTETELEK
