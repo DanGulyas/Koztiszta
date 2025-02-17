@@ -350,8 +350,14 @@ app.layout = html.Div([  # Start of the layout
                                         title='',  # Remove the x-axis title
                                     ),
                                 ).update_traces(
-                                    texttemplate='%{y}', textposition='inside',
-                                    insidetextfont=dict(color='white', size=12)
+                                    texttemplate='%{y}',
+                                    insidetextfont=dict(color='white', size=12),
+                                    textfont=dict(size=15),  # Standard font size
+                                ).update_traces(
+                                    # Dynamically set 'inside' or 'outside' based on the value of each bar
+                                    textposition=[
+                                        'inside' if y > 100 else 'outside' for y in df_kpi2['Hibák száma']
+                                    ]
                                 ),
                             ),
                             dcc.Graph(
@@ -448,8 +454,12 @@ app.layout = html.Div([  # Start of the layout
                                         title='',  # Remove the x-axis title
                                     ),
                                 ).update_traces(
-                                    texttemplate='%{y}', textposition='inside',
-                                    insidetextfont=dict(color='white', size=12)
+                                    texttemplate='%{y}',
+                                    insidetextfont=dict(color='white', size=12),
+                                    textposition=[
+                                        'inside' if y > 100 else 'outside' for y in df_kpi['Hibák száma']
+                                    ],  # Conditionally set 'inside' or 'outside'
+                                    textfont=dict(size=15),  # Standard font size
                                 )
                             ),
                             dcc.Graph(
