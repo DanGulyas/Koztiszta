@@ -39,17 +39,17 @@ kpi_lista = {'Más cikkszámokon mérlegjegy': 1,
 
 tiz_nap_vazlat = {
     "10 napnál régebbi, Vázlat státuszú szerződések?": ["Nem", "Nincs aktiválási dátum"],
-        "Count": [2126, 86],
+        "Count": [2176, 84],
     }
 
 tiz_nap_modositas = {
     "10 napnál régebbi, Módosítás szükséges státuszú szerződések?": ["Igen", "Nem", "Nincs aktiválási dátum"],
-    "Count": [294, 1832, 86]
+    "Count": [264, 1996, 0]
 }
 
 szerztetel_SAP_azonosito = {
     "Szerződéstételen van SAP azonosító?": ["Igen", "Nem"],
-        "Count": [1458, 754]
+        "Count": [1496, 764]
     }
 
 szerztetel_szolgcikk = {
@@ -58,11 +58,11 @@ szerztetel_szolgcikk = {
     }
 
 kpi_lista_szerzodesek = {'10 napnál régebbi, vázlat státuszú szerződések': 0,
-             '10 napnál régebbi, Módosítás szükséges státuszú szerződések': 294,
-             'Szerződéstételen nincs SAP azonosító': 754,
+             '10 napnál régebbi, Módosítás szükséges státuszú szerződések': 264,
+             'Szerződéstételen nincs SAP azonosító': 764,
              'Szerződéstételen nincs kapcsolódó szolg. cikk': 0,
-             'SAP-SF között szerződéstételen lévő számlázási tétel nem egyezik meg': 0,
-             'SAP-SF között szerződéstételek státusza nem egyezik meg': 53,
+             'SAP-SF között szerződéstételen lévő számlázási tétel nem egyezik meg': 1,
+             'SAP-SF között szerződéstételek státusza nem egyezik meg': 58,
              'SAP szerződéstétel és cikk árazása nem egyezik meg': 40,}
 
 celletesitmenyszerz_data = {
@@ -70,11 +70,11 @@ celletesitmenyszerz_data = {
     "Count": [42581, 6455]
 }
 
-SAP_SF_szamltetel = [0]               # Nincs találat = 1022   SAP-SF között szerződéstételek státusza egyezik e
+SAP_SF_szamltetel = [1]               # Nincs találat = 1022   SAP-SF között szerződéstételek státusza egyezik e
 
 SAP_SF_szerztetelstatusz = {
 "SAP-SF között szerződéstételek száma egyezik -e?": ["Igen", "Nem"],
-"Count":[1405,	53]}
+"Count":[1438,	58]}
 
 
 SAP_SF_szerztetelszolgcikk  = [0]               # Nincs találat = 1022
