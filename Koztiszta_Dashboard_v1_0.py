@@ -7,32 +7,32 @@ import plotly.graph_objects as go
 # Mock data for "Rendelések"
 rekord_data = {
     'Termék cikkszáma': ['152000177', '152000178', '152000179', '152000180'],
-    'Total': [33203, 605, 1, 2739]
+    'Total': [34882, 633, 1, 2884]
 }
 
 ure_data = {
     'Céllétesítmények száma': ['Nem üres', 'Üres'],
-    'Total': [42073, 6385]
+    'Total': [44526, 6662]
 }
 
-status_data = {
+status_data = {                                                     
     'Megrendelés státusza': ['Van', 'Nincs'],
-    'Rendelésszám': [36542, 6]
+    'Rendelésszám': [38400, 0]
 }
 
-ten_days_data = {
+ten_days_data = {                                                  
     'Üres Mérés': [0],
-    'Nem üres': [36398]
+    'Nem üres': [38400]
 }
 
-rendeleshez_egy_meres_data = [2179]
+rendeleshez_egy_meres_data = [2190]
 rendeleshez_egy_meres_data_dict = {'Egy rendeléshez több mérés van': ['Igen', 'Nem'],
-    'Mérés': [28452, 2179]}
+    'Mérés': [29541, 2190]}
 
 kpi_lista = {'Más cikkszámokon mérlegjegy': 1,
-             'Üres Céllétesítmény rekordok': 6385,
-             'Teljesült mérések mérési adat nélkül': 6,
-             'Rendeléshez több, mint 1 mérés van': 2179,
+             'Üres Céllétesítmény rekordok': 6662,
+             'Teljesült mérések mérési adat nélkül': 0,
+             'Rendeléshez több, mint 1 mérés van': 2190,
              '10 napja letelt rendeléseken nincs mérés': 0}
 
 #                                                               SZERZODESEK SZERZLDESTETELEK
