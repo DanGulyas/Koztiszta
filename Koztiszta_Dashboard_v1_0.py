@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 
 # Mock data for "Rendelések"
 rekord_data = {
-    'Termék cikkszáma': ['152000177', '152000178', '152000179', '152000180'],
-    'Total': [35464, 642, 0, 2929]         #
+    'Termék cikkszáma': ['152000177', '152000178', '152000180'],
+    'Total': [35464, 642, 2929]         #
 }
 
 ure_data = {
